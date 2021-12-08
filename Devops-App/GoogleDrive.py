@@ -1,6 +1,7 @@
 
 import csv
 import logging
+import psycopg2
 from datetime import date
 from datetime import datetime
 
@@ -12,33 +13,43 @@ from datetime import datetime
 
 #Exportar tablas
 
-customer = [
-    ['Customer','Plaza','rodri@gmail.com'],
-    ['Pamela','Caballero','pame@gmail.com'],
-]
 
-employe = [
-    ['Employe','Plaza','rodri@gmail.com'],
-    ['Carla','Caballero','pame@gmail.com'],
-]
+conn = psycopg2.connect(
+    host="localhost",
+    database="rest-market",
+    user="Rodrigo",
+    password="password",
+    port= "5432")
 
-food = [
-    ['Food','Plaza','rodri@gmail.com'],
-    ['Carla','Caballero','pame@gmail.com'],
-]
+def consulta_tablas():
+    cur1=conn.cursor()
+    cur2=conn.cursor()
+    cur3=conn.cursor()
+    cur4=conn.cursor()
 
-product = [
-    ['Product','Plaza','rodri@gmail.com'],
-    ['Carla','Caballero','pame@gmail.com'],
-]
+    cur1.execute('SELECT * FROM "Customers"')
+    cur2.execute('SELECT * FROM "Employees"')
+    cur3.execute('SELECT * FROM "Foods"')
+    cur4.execute('SELECT * FROM "Products"')
+    
+    datosCustomer = cur1.fetchall()
+    datosEmployees = cur2.fetchall()
+    datosFoods = cur3.fetchall()
+    datosProducts = cur4.fetchall()
 
+    cur1.close()
+    cur2.close()
+    cur3.close()
+    cur4.close()
 
+    conn.close()
+    return datosCustomer ,datosEmployees,datosFoods, datosProducts
+
+Tablas = consulta_tablas()
 with open('Tablas.csv','w', newline='') as file:
     writer = csv.writer(file,delimiter=';')
-    writer.writerows(customer)
-    writer.writerows(employe)
-    writer.writerows(food)
-    writer.writerows(product)
+    writer.writerows(Tablas)
+
    #Día actual
 today = date.today()
 
@@ -79,10 +90,8 @@ def crear_archivo_texto(nombre_archivo,contenido,id_folder):
     archivo.SetContentString(contenido)
     archivo.Upload()
 
-crear_archivo_texto('customer_'+Fecha +'.csv',customer.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
-crear_archivo_texto('employee_'+Fecha +'.csv',employe.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
-crear_archivo_texto('food_'+Fecha +'.csv',food.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
-crear_archivo_texto('product_'+Fecha +'.csv',product.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+crear_archivo_texto('tablas_'+Fecha +'.csv',Tablas.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+
 
 
 
