@@ -21,34 +21,63 @@ conn = psycopg2.connect(
     password="password",
     port= "5432")
 
+
 def consulta_tablas():
     cur1=conn.cursor()
-    cur2=conn.cursor()
-    cur3=conn.cursor()
-    cur4=conn.cursor()
 
     cur1.execute('SELECT * FROM "Customers"')
-    cur2.execute('SELECT * FROM "Employees"')
-    cur3.execute('SELECT * FROM "Foods"')
-    cur4.execute('SELECT * FROM "Products"')
-    
+
     datosCustomer = cur1.fetchall()
-    datosEmployees = cur2.fetchall()
-    datosFoods = cur3.fetchall()
-    datosProducts = cur4.fetchall()
 
     cur1.close()
-    cur2.close()
-    cur3.close()
-    cur4.close()
+    return datosCustomer
 
+def consulta_tablas2():
+    cur2=conn.cursor()
+
+    cur2.execute('SELECT * FROM "Employees"')
+
+    datosEmployees = cur2.fetchall()
+    
+    cur2.close()    
+   
+    return datosEmployees
+
+def consulta_tablas3():
+    cur3=conn.cursor()
+
+    cur3.execute('SELECT * FROM "Foods"')
+
+    datosFoods = cur3.fetchall()
+    
+    cur3.close()    
+   
+    return datosFoods
+
+def consulta_tablas4():
+    cur4=conn.cursor()
+
+    cur4.execute('SELECT * FROM "Foods"')
+
+    datosFoods = cur4.fetchall()
+    
+    cur4.close()    
+   
     conn.close()
-    return datosCustomer ,datosEmployees,datosFoods, datosProducts
+    return datosFoods
 
 Tablas = consulta_tablas()
+Tablas2 = consulta_tablas2()
+Tablas3 = consulta_tablas3()
+Tablas4 = consulta_tablas4()
+
 with open('Tablas.csv','w', newline='') as file:
     writer = csv.writer(file,delimiter=';')
     writer.writerows(Tablas)
+    writer.writerows(Tablas2)
+    writer.writerows(Tablas3)
+    writer.writerows(Tablas4)
+
 
    #Día actual
 today = date.today()
@@ -90,10 +119,10 @@ def crear_archivo_texto(nombre_archivo,contenido,id_folder):
     archivo.SetContentString(contenido)
     archivo.Upload()
 
-crear_archivo_texto('tablas_'+Fecha +'.csv',Tablas.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
-
-
-
+crear_archivo_texto('customers_'+Fecha +'.csv',Tablas.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+crear_archivo_texto('employees_'+Fecha +'.csv',Tablas2.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+crear_archivo_texto('foods_'+Fecha +'.csv',Tablas3.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+crear_archivo_texto('products_'+Fecha +'.csv',Tablas4.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
 
 #Logs
 
