@@ -29,11 +29,11 @@ while True:
     logging.info('Ejecuntando la aplicación')
 
     conn = psycopg2.connect(
-    host="localhost",
+    host="192.168.113.132",
     database="rest-market",
-    user="Rodrigo",
-    password="password",
-    port= "5432")
+    user="postgres",
+    password="postgres",
+    port="5432")
 
     if(not conn):
         logging.eror('No se pudo conectar a la base de datos')
