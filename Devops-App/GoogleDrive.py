@@ -1,5 +1,4 @@
 
-
 import csv
 import logging
 import psycopg2
@@ -29,11 +28,11 @@ while True:
     logging.info('Ejecuntando la aplicación')
 
     conn = psycopg2.connect(
-    host="192.168.113.132",
+    host="localhost",
     database="rest-market",
-    user="postgres",
-    password="postgres",
-    port="5432")
+    user="Rodrigo",
+    password="password",
+    port= "5432")
 
     if(not conn):
         logging.eror('No se pudo conectar a la base de datos')
@@ -91,15 +90,7 @@ while True:
     Tablas2 = consulta_tablas2()
     Tablas3 = consulta_tablas3()
     Tablas4 = consulta_tablas4()
-
-    with open('Tablas.csv','w', newline='') as file:
-        writer = csv.writer(file,delimiter=';')
-        writer.writerows(Tablas)
-        writer.writerows(Tablas2)
-        writer.writerows(Tablas3)
-        writer.writerows(Tablas4)
-
-    #Día actual
+  #Día actual
     today = date.today()
 
     #Fecha actual
@@ -113,6 +104,27 @@ while True:
     second = now.strftime("%S")
 
     Fecha = '{'+year+'}-{'+month+'}-{'+day+'}-{'+month+'}-{'+hour+'}-{'+minute+'}-{'+second+'}'
+
+    with open('customers_'+Fecha +'.csv','w', newline='') as file:
+        writer = csv.writer(file,delimiter=';')
+        Customers =  writer.writerows(Tablas).__str__()
+
+    with open('employees_'+Fecha +'.csv','w', newline='') as file:
+        writer = csv.writer(file,delimiter=';')
+        Employees =writer.writerows(Tablas2)
+        Foods= writer.writerows(Tablas3)
+        Products=writer.writerows(Tablas4).__str__()
+
+    with open('foods_'+Fecha +'.csv','w', newline='') as file:
+        writer = csv.writer(file,delimiter=';')
+        Foods= writer.writerows(Tablas3)
+        Products=writer.writerows(Tablas4).__str__()
+
+    with open('products_'+Fecha +'.csv','w', newline='') as file:
+        writer = csv.writer(file,delimiter=';')
+        Products=writer.writerows(Tablas4).__str__()
+
+  
 
     #INICIAR SESION
     directorio_credencial = 'credentials_module.json'
@@ -140,9 +152,42 @@ while True:
         archivo.SetContentString(contenido)
         archivo.Upload()
 
-    crear_archivo_texto('customers_'+Fecha +'.csv',Tablas.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
-    crear_archivo_texto('employees_'+Fecha +'.csv',Tablas2.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
-    crear_archivo_texto('foods_'+Fecha +'.csv',Tablas3.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
-    crear_archivo_texto('products_'+Fecha +'.csv',Tablas4.__str__(),'1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+    def subir_archivo(ruta_archivo,id_folder):
+        credenciales = login()
+        archivo = credenciales.CreateFile({'parents': [{"kind": "drive#fileLink",\
+                                                    "id": id_folder}]})
+        archivo['title'] = ruta_archivo.split("/")[-1]
+        archivo.SetContentFile(ruta_archivo)
+        archivo.Upload()
+
+    subir_archivo('customers_'+Fecha +'.csv','1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+    subir_archivo('employees_'+Fecha +'.csv','1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+    subir_archivo('foods_'+Fecha +'.csv','1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+    subir_archivo('products_'+Fecha +'.csv','1vfyZ75fwotCgiNWWE5rifmGLTZjqaRdJ')
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     time.sleep(600)
